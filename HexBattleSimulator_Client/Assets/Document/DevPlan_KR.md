@@ -92,3 +92,7 @@ AFK: 새로운 여정에서 영감을 받은 3D 자동 전투 시뮬레이터입
 - **모드**: Landscape (가로 모드)  
 - **Android 최소 버전**: Android 11 (API Level 30 이상)  
 - **해상도 기준**: 1920x1080 (16:9 비율 기준)  
+
+## 참고 자료
+
+- https://youtube.com/shorts/iwSp-OtDhsw?si=3qdBuc2FuxqyO3mP
