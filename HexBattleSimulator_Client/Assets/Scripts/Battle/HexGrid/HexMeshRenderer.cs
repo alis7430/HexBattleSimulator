@@ -56,7 +56,7 @@ public class HexMeshRenderer : MonoBehaviour
 
 #if UNITY_EDITOR
         mesh.name = "HexMesh (Generated)";
-        GetComponent<MeshFilter>().mesh = mesh;
+        GetComponent<MeshFilter>().sharedMesh = mesh;
 #else
         GetComponent<MeshFilter>().mesh = mesh;
 #endif
