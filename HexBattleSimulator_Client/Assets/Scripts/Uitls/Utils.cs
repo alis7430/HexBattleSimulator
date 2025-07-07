@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Utils : MonoBehaviour
+public static class Utils
 {
     public static GameObject FindChild(GameObject go, string name = null, bool recursive = false)
     {

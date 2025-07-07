@@ -20,8 +20,9 @@ public class BattleScene : BaseScene
 
     private void Start()
     {
-        _hexGridManager.GenerateGrid();
+        _hexGridManager.GeneratePointyTopGrid();
         _camera.Follow = _hexGridManager.Center;
+        _camera.LookAt = _hexGridManager.Center;
     }
 
     public override void Clear()
