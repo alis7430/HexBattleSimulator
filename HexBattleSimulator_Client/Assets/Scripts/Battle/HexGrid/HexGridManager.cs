@@ -1,6 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 // based on axial coordinates
 public struct HexCoord
@@ -30,13 +33,15 @@ public class HexGridManager : MonoBehaviour
         PointyTop,
         FlatTop,
     }
+    public Transform Center { get; private set; }
+    public Transform Root { get; private set; }
+
     private HexOrientation currOrientation = HexOrientation.PointyTop;
     public int width = 6;
     public int height = 6;
     public float tileSize = 1f;
 
-    public Transform Center { get; private set; }
-    public Transform Root { get; private set; }
+    private Dictionary<HexCoord, HexTile> _tileMap = new();
 
     private void Awake()
     {
@@ -103,6 +108,9 @@ public class HexGridManager : MonoBehaviour
                     continue;
                 }
 
+                var coord = new HexCoord(q, r);
+                _tileMap[coord] = tile;
+
                 tile.SetTile(tileSize);
                 tile.transform.position = pos;
 
@@ -126,4 +134,24 @@ public class HexGridManager : MonoBehaviour
     {
         GenerateHexGrid(HexOrientation.PointyTop);
     }
+
+#if UNITY_EDITOR
+    private void OnDrawGizmos()
+    {
+        if (_tileMap == null || _tileMap.Count == 0)
+            return;
+
+        GUIStyle style = new GUIStyle();
+        style.normal.textColor = Color.red;
+        style.fontSize = 16;
+        style.alignment = TextAnchor.MiddleCenter;
+
+        foreach (var pair in _tileMap)
+        {
+            Vector3 worldPos = pair.Value.transform.position + Vector3.up * 0.1f;
+            string label = $"{pair.Key.q},{pair.Key.r}";
+            Handles.Label(worldPos, label, style);
+        }
+    }
+#endif
 }
