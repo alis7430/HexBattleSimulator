@@ -111,7 +111,7 @@ public class HexGridManager : MonoBehaviour
                 var coord = new HexCoord(q, r);
                 _tileMap[coord] = tile;
 
-                tile.SetTile(tileSize);
+                tile.SetTile(tileSize, HexTile.TileType.Selectable);
                 tile.transform.position = pos;
 
                 //Pointy-Top은 30도 회전
