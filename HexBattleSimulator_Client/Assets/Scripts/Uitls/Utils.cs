@@ -19,7 +19,7 @@ public static class Utils
         {
             for (int i = 0; i < go.transform.childCount; i++)
             {
-                Transform t = go.transform.GetChild(0);
+                Transform t = go.transform.GetChild(i);
                 if (string.IsNullOrEmpty(name) || t.name == name)
                 {
                     T component = t.GetComponent<T>();
