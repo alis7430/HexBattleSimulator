@@ -5,7 +5,7 @@ using UnityEngine;
 
 
 /// <summary>
-/// ur-dev commented
+/// author: ur-dev
 /// A generic singleton class for unity monobehaviour
 /// Inherit from this base class to create a singleton.
 /// 

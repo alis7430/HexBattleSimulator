@@ -2,6 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// author: ur-dev
+/// Custom debbuger for rendering
+/// </summary>
 public class RenderDebbuger : MonoBehaviour
 {
     public enum DebugMode
@@ -10,6 +14,7 @@ public class RenderDebbuger : MonoBehaviour
         Awake,
         Start,
         Update,
+        Once,
     }
     
     [SerializeField] private DebugMode _debugMode = DebugMode.Start;
@@ -23,6 +28,15 @@ public class RenderDebbuger : MonoBehaviour
     void Update()
     {
         StartDebug(DebugMode.Update);
+    }
+
+    void LateUpdate()
+    {
+        if (_debugMode == DebugMode.Once)
+        {
+            StartDebug(DebugMode.Once);
+            _debugMode = DebugMode.None;
+        }
     }
 
     private void StartDebug(DebugMode debugMode)
