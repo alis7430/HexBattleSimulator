@@ -135,6 +135,20 @@ public class HexGridManager : MonoBehaviour
         GenerateHexGrid(HexOrientation.PointyTop);
     }
 
+    public HexTile GetTile(HexCoord coord)
+    {
+        if (_tileMap.TryGetValue(coord, out HexTile tile))
+            return tile;
+
+        return null;
+    }
+
+    public HexTile GetTile(int q, int r)
+    {
+        HexCoord coord = new HexCoord(q, r);
+        return GetTile(coord);
+    }
+
 #if UNITY_EDITOR
     private void OnDrawGizmos()
     {
@@ -148,6 +162,9 @@ public class HexGridManager : MonoBehaviour
 
         foreach (var pair in _tileMap)
         {
+            if (pair.Value.gameObject.activeSelf == false)
+                continue;
+
             Vector3 worldPos = pair.Value.transform.position + Vector3.up * 0.1f;
             string label = $"{pair.Key.q},{pair.Key.r}";
             Handles.Label(worldPos, label, style);

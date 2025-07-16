@@ -64,7 +64,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: c4b85c45273656a44863882fb4a091ee, type: 2}
+  - {fileID: 2100000, guid: 327a2a53882ec8f41addfbcac9699393, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -100,6 +100,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _radius: 0.5
   _tileType: 0
+  _color: {r: 0, g: 0, b: 0, a: 1}
+  _alpha: 0.5
   _showOutline: 1
   _outlineWidth: 0.05
   _outlineColor: {r: 0, g: 0, b: 0, a: 1}

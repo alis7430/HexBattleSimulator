@@ -65,14 +65,12 @@ public class HexMeshRenderer : MonoBehaviour
     public void SetColor(Color color)
     {
         if (_meshRenderer == null) return;
-        _meshRenderer.material.color = color;
-    }
-
-    public void SetAlpha(float alpha)
-    {
-        if (_meshRenderer == null) return;
-        var color = _meshRenderer.material.color;
-        color.a = alpha;
-        _meshRenderer.material.color = color;
+        if (_meshRenderer.sharedMaterial.HasProperty("_BaseColor"))
+        {
+            var block = new MaterialPropertyBlock();
+            _meshRenderer.GetPropertyBlock(block);
+            block.SetColor("_BaseColor", color);
+            _meshRenderer.SetPropertyBlock(block);
+        }
     }
 }

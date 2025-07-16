@@ -13,6 +13,7 @@ public class HexTileEditor : Editor
         if (GUILayout.Button("Generate Hex Mesh"))
         {
             hexTile?.GenerateHexMesh();
+            hexTile?.UpdateColor();
             hexTile?.UpdateOutline();
         }
     }

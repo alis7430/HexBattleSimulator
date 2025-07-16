@@ -18,6 +18,10 @@ public class HexTile : MonoBehaviour
     [Header("Tile Settings")]
     [SerializeField] private float _radius = 0.5f;
     [SerializeField] private TileType _tileType;
+    [SerializeField] private Color _color = Color.black;
+
+    [Range(0f, 1f)]
+    [SerializeField] private float _alpha = 1f;
 
     [Header("Outline Settings")]
     [SerializeField] private bool _showOutline = true;
@@ -36,6 +40,17 @@ public class HexTile : MonoBehaviour
         _hexOutline = transform.GetComponentInChildren<HexOutlineRenderer>();
     }
 
+    private void LateUpdate()
+    {
+        if (_needUpdate)
+        {
+            GenerateHexMesh();
+            UpdateColor();
+            UpdateOutline();
+            _needUpdate = false;
+        }
+    }
+
     public void SetTile(float radius, TileType tileType = TileType.Default)
     {
         this._radius = radius;
@@ -43,14 +58,21 @@ public class HexTile : MonoBehaviour
         _needUpdate = true;
     }
 
-    private void LateUpdate()
+    public void SetTile(TileType tileType = TileType.Default)
     {
-        if (_needUpdate)
-        {
-            GenerateHexMesh();
-            UpdateOutline();
-            _needUpdate = false;
-        }
+        SetTile(this._radius, tileType);
+    }
+
+    public void SetTileColor(Color color)
+    {
+        _color = color;
+        _needUpdate = true;
+    }
+
+    public void SetTileColor(Color color, float alpha)
+    {
+        this._alpha = alpha;
+        SetTileColor(color);
     }
 
     private void SetTileType(TileType tileType)
@@ -84,11 +106,19 @@ public class HexTile : MonoBehaviour
         _hexOutline?.SetOutline(_radius, _outlineWidth, _outlineColor, _showOutline);
     }
 
+    public void UpdateColor()
+    {
+        if (_color == Color.black) return;
+        
+        _color.a = Mathf.Clamp(this._alpha, 0, 1);
+        _hexMesh?.SetColor(_color);
+    }
+
 #if UNITY_EDITOR
     // private void OnValidate()
     // {
     //     GenerateHexMesh();
-        
+
     //     if (_hexOutline == null)
     //         _hexOutline = transform.GetComponentInChildren<HexOutlineRenderer>();
 
