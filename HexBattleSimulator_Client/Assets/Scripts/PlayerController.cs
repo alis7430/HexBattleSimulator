@@ -31,8 +31,8 @@ public class PlayerController : MonoBehaviour
     private void Start()
     {
         // Subscribe event using Managers.Input
-        Managers.Input.MouseAction -= OnMouseClicked;
-        Managers.Input.MouseAction += OnMouseClicked;
+        Managers.Input.OnMouseEvent -= OnMouseClicked;
+        Managers.Input.OnMouseEvent += OnMouseClicked;
     }
 
     private void Update()
@@ -74,9 +74,9 @@ public class PlayerController : MonoBehaviour
         animator.SetFloat("speed", 0);
     }
     
-    private void OnMouseClicked(Define.MouseEvent evt)
+    private void OnMouseClicked(MouseEventArgs args)
     {
-        if (evt != Define.MouseEvent.Click) return;
+        if (args.EventType != MouseEventType.Click) return;
 
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         Debug.DrawRay(Camera.main.transform.position, ray.direction * LayCastDist, Color.red, 1f);

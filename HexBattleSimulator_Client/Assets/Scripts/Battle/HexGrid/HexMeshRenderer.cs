@@ -6,15 +6,19 @@ using UnityEngine;
 /// Generate HexTile Mesh
 /// </summary>
 [ExecuteInEditMode]
-[RequireComponent(typeof(MeshFilter), typeof(MeshRenderer))]
+[RequireComponent(typeof(MeshFilter), typeof(MeshRenderer), typeof(MeshCollider))]
 public class HexMeshRenderer : MonoBehaviour
 {
     private float radius = 1f;
     MeshRenderer _meshRenderer;
+    MeshFilter _meshFilter;
+    MeshCollider _meshCollider;
 
     private void Awake()
     {
         _meshRenderer = transform.GetComponent<MeshRenderer>();
+        _meshFilter = transform.GetComponent<MeshFilter>();
+        _meshCollider = transform.GetComponent<MeshCollider>();
     }
 
     public void GenerateHexMesh(float radius)
@@ -54,12 +58,11 @@ public class HexMeshRenderer : MonoBehaviour
         mesh.RecalculateNormals();
         mesh.RecalculateBounds();
 
-#if UNITY_EDITOR
-        mesh.name = "HexMesh (Generated)";
-        GetComponent<MeshFilter>().sharedMesh = mesh;
-#else
-        GetComponent<MeshFilter>().mesh = mesh;
-#endif
+
+        mesh.name = "HexTile (Generated)";
+        _meshFilter.sharedMesh = mesh;
+        _meshCollider.sharedMesh = null;
+        _meshCollider.sharedMesh = mesh;
     }
 
     public void SetColor(Color color)

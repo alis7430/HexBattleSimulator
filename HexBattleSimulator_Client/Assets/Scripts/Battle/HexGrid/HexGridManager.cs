@@ -5,24 +5,6 @@ using UnityEngine;
 using UnityEditor;
 #endif
 
-// based on axial coordinates
-public struct HexCoord
-{
-    public int q; // column
-    public int r; // row
-
-    public HexCoord(int q, int r)
-    {
-        this.q = q;
-        this.r = r;
-    }
-
-    public override string ToString()
-    {
-        return $"({q},{r})";
-    }
-}
-
 // Provides two versions of grid align.
 // flat-top (평평한 변이 위/아래)
 // pointy-top (뾰족한 꼭짓점이 위/아래)
@@ -36,11 +18,11 @@ public class HexGridManager : MonoBehaviour
     public Transform Center { get; private set; }
     public Transform Root { get; private set; }
 
-    private HexOrientation currOrientation = HexOrientation.PointyTop;
     public int width = 6;
     public int height = 6;
     public float tileSize = 1f;
 
+    private HexOrientation currOrientation = HexOrientation.PointyTop;
     private Dictionary<HexCoord, HexTile> _tileMap = new();
 
     private void Awake()

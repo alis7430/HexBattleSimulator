@@ -11,9 +11,14 @@ public class HexTile : MonoBehaviour
 {
     public enum TileType
     {
-        Default,
-        Selectable,
+        Default,        // 기본 타일
+        Selectable,     // 선택 가능한 상태
+        Blocked,        // 이동 불가한 타일
+        Occupied,       // 유닛이 점유 중
     }
+
+    public GameObject CurrentUnit { get; set; }
+    public bool HasUnit => CurrentUnit != null;
 
     [Header("Tile Settings")]
     [SerializeField] private float _radius = 0.5f;
@@ -113,16 +118,4 @@ public class HexTile : MonoBehaviour
         _color.a = Mathf.Clamp(this._alpha, 0, 1);
         _hexMesh?.SetColor(_color);
     }
-
-#if UNITY_EDITOR
-    // private void OnValidate()
-    // {
-    //     GenerateHexMesh();
-
-    //     if (_hexOutline == null)
-    //         _hexOutline = transform.GetComponentInChildren<HexOutlineRenderer>();
-
-    //     UpdateOutline();
-    // }
-#endif
 }
