@@ -1,31 +1,17 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
+
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
 
-// based on axial coordinates
-public struct HexCoord
-{
-    public int q; // column
-    public int r; // row
-
-    public HexCoord(int q, int r)
-    {
-        this.q = q;
-        this.r = r;
-    }
-
-    public override string ToString()
-    {
-        return $"({q},{r})";
-    }
-}
-
-// Provides two versions of grid align.
-// flat-top (평평한 변이 위/아래)
-// pointy-top (뾰족한 꼭짓점이 위/아래)
+/// <summary>
+/// 맵의 기하 구조(생성, 좌표 변환, 이웃 타일, 범위 계산)
+/// flat-top (평평한 변이 위/아래)
+/// pointy-top (뾰족한 꼭짓점이 위/아래)타일 생성/배치
+/// </summary>
 public class HexGridManager : MonoBehaviour
 {
     public enum HexOrientation
@@ -36,11 +22,11 @@ public class HexGridManager : MonoBehaviour
     public Transform Center { get; private set; }
     public Transform Root { get; private set; }
 
-    private HexOrientation currOrientation = HexOrientation.PointyTop;
     public int width = 6;
     public int height = 6;
     public float tileSize = 1f;
 
+    private HexOrientation currOrientation = HexOrientation.PointyTop;
     private Dictionary<HexCoord, HexTile> _tileMap = new();
 
     private void Awake()
@@ -100,7 +86,7 @@ public class HexGridManager : MonoBehaviour
                     ? HexGridCalculator.HexToWorld_FlatTop(tileSize, q, r)
                     : HexGridCalculator.HexToWorld_PointyTop(tileSize, q, r);
 
-                HexTile tile = Managers.Resource.Instantiate("Battle/HexTile", Root)?.GetComponent<HexTile>();
+                var tile = Managers.Resource.Instantiate("Battle/HexTile", Root)?.GetComponent<HexTile>();
 
                 if (tile == null)
                 {
@@ -110,8 +96,9 @@ public class HexGridManager : MonoBehaviour
 
                 var coord = new HexCoord(q, r);
                 _tileMap[coord] = tile;
+                tile.Coord = coord;
 
-                tile.SetTile(tileSize, HexTile.TileType.Selectable);
+                tile.SetTileSize(tileSize);
                 tile.transform.position = pos;
 
                 //Pointy-Top은 30도 회전
@@ -147,6 +134,32 @@ public class HexGridManager : MonoBehaviour
     {
         HexCoord coord = new HexCoord(q, r);
         return GetTile(coord);
+    }
+
+    public List<HexTile> GetAllTiles()
+    {
+        return _tileMap?.Values.ToList() ?? null;
+    }
+
+    public List<HexTile> GetNeighbors(HexTile tile)
+    {
+        var coord = tile.Coord;
+        var neighbors = new List<HexTile>();
+        var directions = new List<HexCoord>()
+        {
+            new HexCoord(1, 0), new HexCoord(1, -1), new HexCoord(0, -1),
+            new HexCoord(-1, 0), new HexCoord(-1, 1), new HexCoord(0, 1)
+        };
+
+        foreach (var dir in directions)
+        {
+            var findCoord = coord + dir;
+            if (_tileMap.TryGetValue(findCoord, out var ret))
+            {
+                neighbors.Add(ret);
+            }
+        }
+        return neighbors;
     }
 
 #if UNITY_EDITOR

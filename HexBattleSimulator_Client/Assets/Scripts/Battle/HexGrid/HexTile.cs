@@ -9,38 +9,32 @@ using UnityEngine;
 [RequireComponent(typeof(HexMeshRenderer))]
 public class HexTile : MonoBehaviour
 {
-    public enum TileType
-    {
-        Default,
-        Selectable,
-    }
+    public HexCoord Coord = HexCoord.zero;
 
     [Header("Tile Settings")]
-    [SerializeField] private float _radius = 0.5f;
-    [SerializeField] private TileType _tileType;
-    [SerializeField] private Color _color = Color.black;
+    [SerializeField] protected float _radius = 0.5f;
+    [SerializeField] protected Color _color = Color.black;
 
     [Range(0f, 1f)]
     [SerializeField] private float _alpha = 1f;
 
     [Header("Outline Settings")]
-    [SerializeField] private bool _showOutline = true;
-    [SerializeField] private float _outlineWidth = 0.05f;
-    [SerializeField] private Color _outlineColor = Color.black;
+    [SerializeField] protected bool _showOutline = true;
+    [SerializeField] protected float _outlineWidth = 0.05f;
+    [SerializeField] protected Color _outlineColor = Color.black;
 
+    protected HexMeshRenderer _hexMesh;
+    protected HexOutlineRenderer _hexOutline;
 
-    HexMeshRenderer _hexMesh;
-    HexOutlineRenderer _hexOutline;
+    protected bool _needUpdate = false;
 
-    bool _needUpdate = false;
-
-    void Awake()
+    protected virtual void Awake()
     {
         _hexMesh = gameObject.GetComponent<HexMeshRenderer>();
         _hexOutline = transform.GetComponentInChildren<HexOutlineRenderer>();
     }
 
-    private void LateUpdate()
+    protected virtual void LateUpdate()
     {
         if (_needUpdate)
         {
@@ -50,17 +44,10 @@ public class HexTile : MonoBehaviour
             _needUpdate = false;
         }
     }
-
-    public void SetTile(float radius, TileType tileType = TileType.Default)
+    public void SetTileSize(float radius)
     {
         this._radius = radius;
-        SetTileType(tileType);
         _needUpdate = true;
-    }
-
-    public void SetTile(TileType tileType = TileType.Default)
-    {
-        SetTile(this._radius, tileType);
     }
 
     public void SetTileColor(Color color)
@@ -75,21 +62,21 @@ public class HexTile : MonoBehaviour
         SetTileColor(color);
     }
 
-    private void SetTileType(TileType tileType)
+    public void SetOutline(Color color, float width, bool bShow = true)
     {
-        switch (tileType)
-        {
-            case TileType.Default:
-                _showOutline = false;
-                break;
-            case TileType.Selectable:
-                _showOutline = true;
-                _outlineColor = Color.black;
-                _outlineColor.a = 0.5f;
-                break;
-            default:
-                return;
-        }
+        _outlineColor = color;
+        _outlineWidth = width;
+        _showOutline = bShow;
+        _needUpdate = true;
+    }
+
+    public void SetOutline(Color color, bool bShow = true)
+    {
+        SetOutline(color, _outlineWidth, bShow);
+    }
+    public void SetOutline(bool bShow = true)
+    {
+        SetOutline(_outlineColor, _outlineWidth, bShow);
     }
 
     public void GenerateHexMesh()
@@ -113,16 +100,4 @@ public class HexTile : MonoBehaviour
         _color.a = Mathf.Clamp(this._alpha, 0, 1);
         _hexMesh?.SetColor(_color);
     }
-
-#if UNITY_EDITOR
-    // private void OnValidate()
-    // {
-    //     GenerateHexMesh();
-
-    //     if (_hexOutline == null)
-    //         _hexOutline = transform.GetComponentInChildren<HexOutlineRenderer>();
-
-    //     UpdateOutline();
-    // }
-#endif
 }

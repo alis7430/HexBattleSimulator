@@ -11,9 +11,10 @@ GameObject:
   - component: {fileID: 1449715734416050011}
   - component: {fileID: 6367986100011439821}
   - component: {fileID: 1644293697048918777}
-  - component: {fileID: -7101411979156103676}
+  - component: {fileID: 1522924677462443643}
   - component: {fileID: 2576577763558129112}
-  m_Layer: 0
+  - component: {fileID: 4538662398729846248}
+  m_Layer: 6
   m_Name: HexTile
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -86,7 +87,7 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &-7101411979156103676
+--- !u!114 &1522924677462443643
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -95,11 +96,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 7248093860715193564}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b6365a70e040ef141a996dab78a59e63, type: 3}
+  m_Script: {fileID: 11500000, guid: b0b97c883c18b5a40bcf4f25b432bbe0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Coord:
+    q: 0
+    r: 0
   _radius: 0.5
-  _tileType: 0
   _color: {r: 0, g: 0, b: 0, a: 1}
   _alpha: 0.5
   _showOutline: 1
@@ -117,6 +120,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 019c3798c18e46d42a4108d359a68225, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!64 &4538662398729846248
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7248093860715193564}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 0}
 --- !u!1 &8615019468319605874
 GameObject:
   m_ObjectHideFlags: 0
@@ -143,13 +168,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8615019468319605874}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: 0, y: 0, z: -1, w: 0}
+  m_LocalPosition: {x: 0, y: 0.02, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1449715734416050011}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: -180}
 --- !u!120 &670089772103144983
 LineRenderer:
   serializedVersion: 2
