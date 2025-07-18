@@ -7,5 +7,5 @@ using UnityEngine;
 /// </summary>
 public class BattleUnit : Unit
 {
-    public HexTile CurrentTile { get; set; }
+    
 }

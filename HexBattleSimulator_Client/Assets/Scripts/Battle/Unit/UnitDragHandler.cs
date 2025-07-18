@@ -8,20 +8,33 @@ using UnityEngine;
 /// </summary>
 public class UnitDragHandler : MonoBehaviour
 {
-    private Camera mainCamera;  // for raycasting
+    private Camera _mainCamera;  // for raycasting
+    private BoardStateManager _board;
 
     private BattleUnit _selectedUnit;
-    private HexTile _originTile;
+    private BattleHexTile _originTile;
+    private BattleHexTile _candidateTile;
     private Vector3 _originalPosition;
     private Vector3 _dragOffset;
 
     private void Start()
     {
+        _board = FindObjectOfType<BoardStateManager>();
+
+        if (_board == null)
+        {
+            var scene = GameObject.Find("@BattleScene");
+            if (scene != null)
+            {
+                _board = scene.AddMissingComponent<BoardStateManager>();
+            }
+        }
+
         Managers.Input.OnMouseEvent -= OnMouseEvent;
         Managers.Input.OnMouseEvent += OnMouseEvent;
 
-        if (mainCamera == null)
-            mainCamera = Camera.main;
+        if (_mainCamera == null)
+            _mainCamera = Camera.main;
     }
 
     private void OnDestroy()
@@ -40,15 +53,16 @@ public class UnitDragHandler : MonoBehaviour
             case MouseEventType.DragStart:
                 if (_selectedUnit != null)
                 {
-                    _dragOffset = _selectedUnit.transform.position - VectorUtils.ScreenToWorld(mainCamera, args.ScreenPosition);
+                    _dragOffset = _selectedUnit.transform.position - VectorUtils.ScreenToWorld(_mainCamera, args.ScreenPosition);
                 }
                 break;
 
             case MouseEventType.Drag:
                 if (_selectedUnit != null)
                 {
-                    Vector3 world = VectorUtils.ScreenToWorld(mainCamera, args.ScreenPosition) + _dragOffset;
+                    Vector3 world = VectorUtils.ScreenToWorld(_mainCamera, args.ScreenPosition) + _dragOffset;
                     _selectedUnit.transform.position = world;
+                    FindPlaceableTile(args.ScreenPosition);
                 }
                 break;
 
@@ -65,47 +79,78 @@ public class UnitDragHandler : MonoBehaviour
     private void TrySelectUnit(Vector3 screenPos)
     {
         // 유닛 클릭 감지
-        Ray ray = mainCamera.ScreenPointToRay(screenPos);
+        Ray ray = _mainCamera.ScreenPointToRay(screenPos);
         if (Physics.Raycast(ray, out RaycastHit hit))
         {
             BattleUnit unit = hit.collider.GetComponent<BattleUnit>();
             if (unit != null)
             {
                 _selectedUnit = unit;
-                _originTile = unit.CurrentTile;
+                _originTile = _board.GetTileOfUnit(unit);
                 _originalPosition = _selectedUnit.transform.position;
+            }
+        }
+    }
 
-                // 기존 타일 점유 해제
-                // TODO : 기존 유닛이 위치해 있으면 유닛 스왑 기능도 만들어야 함
-                if (_originTile != null)
-                    _originTile.CurrentUnit = null;
+    private void FindPlaceableTile(Vector3 screenPos)
+    {
+        Ray ray = _mainCamera.ScreenPointToRay(screenPos);
+        int tileLayerMask = LayerMask.GetMask("Tile");
+
+        if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, tileLayerMask))
+        {
+            BattleHexTile tile = hit.collider.GetComponent<BattleHexTile>();
+            if (tile != null)
+            {
+                if (_candidateTile != null)
+                    _candidateTile.SetHighlight(BattleHexTile.HighlightState.None);
+
+                // 상태를 아웃라인으로 보여줌
+                if (tile == _originTile)
+                    tile.SetHighlight(BattleHexTile.HighlightState.Current);
+                else if (tile.BattleTileType == BattleHexTile.TileType.Selectable)
+                    tile.SetHighlight(BattleHexTile.HighlightState.Placeable);
+                else
+                    tile.SetHighlight(BattleHexTile.HighlightState.Blocked);
+
+                _candidateTile = tile;
             }
         }
     }
 
     private void TryPlaceUnit(Vector3 screenPos)
     {
-        Ray ray = mainCamera.ScreenPointToRay(screenPos);
+        Ray ray = _mainCamera.ScreenPointToRay(screenPos);
         int tileLayerMask = LayerMask.GetMask("Tile");
+        bool isMoved = false;
 
         if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, tileLayerMask))
         {
-            HexTile tile = hit.collider.GetComponent<HexTile>();
-            if (tile != null && !tile.HasUnit)
+            BattleHexTile tile = hit.collider.GetComponent<BattleHexTile>();
+            if (tile != null)
             {
-                _selectedUnit.transform.position = tile.transform.position;
-                tile.CurrentUnit = _selectedUnit.gameObject;
-                _selectedUnit.CurrentTile = tile;
-                return;
+                bool canPlace = (tile != _originTile) &&
+                                (tile.BattleTileType == BattleHexTile.TileType.Selectable);
+                if (canPlace)
+                {
+                    _board.PlaceUnit(_selectedUnit, tile);
+                    isMoved = true;
+                }
             }
         }
 
         // 실패하면 원래 타일로 돌아감
-        _selectedUnit.transform.position = _originalPosition;
-        if (_originTile != null)
+        if (isMoved == false)
         {
-            _originTile.CurrentUnit = _selectedUnit.gameObject;
-            _selectedUnit.CurrentTile = _originTile;
+            _board.PlaceUnit(_selectedUnit, _originTile);
+            if (_originTile == null)
+                _selectedUnit.transform.position = _originalPosition;
+        }
+
+        if (_candidateTile != null)
+        {
+            _candidateTile.SetHighlight(BattleHexTile.HighlightState.None);
+            _candidateTile = null;
         }
     }
 }
