@@ -11,7 +11,6 @@ public class BattleHexTile : HexTile
         Default,        // 기본 타일
         Selectable,     // 선택 가능한 상태
         Blocked,        // 이동 불가한 타일
-        Occupied,       // 유닛이 점유 중
     }
 
     public enum HighlightState

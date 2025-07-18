@@ -141,6 +141,27 @@ public class HexGridManager : MonoBehaviour
         return _tileMap?.Values.ToList() ?? null;
     }
 
+    public List<HexTile> GetNeighbors(HexTile tile)
+    {
+        var coord = tile.Coord;
+        var neighbors = new List<HexTile>();
+        var directions = new List<HexCoord>()
+        {
+            new HexCoord(1, 0), new HexCoord(1, -1), new HexCoord(0, -1),
+            new HexCoord(-1, 0), new HexCoord(-1, 1), new HexCoord(0, 1)
+        };
+
+        foreach (var dir in directions)
+        {
+            var findCoord = coord + dir;
+            if (_tileMap.TryGetValue(findCoord, out var ret))
+            {
+                neighbors.Add(ret);
+            }
+        }
+        return neighbors;
+    }
+
 #if UNITY_EDITOR
     private void OnDrawGizmos()
     {

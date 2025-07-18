@@ -74,6 +74,26 @@ public class BoardStateManager : MonoBehaviour
             _tileToUnit.Remove(tile);
     }
 
+    public bool IsWalkable(HexTile tile)
+    {
+        var t = tile as BattleHexTile;
+        if (t == null) return false;
+
+        return IsWalkable(t);
+    }
+
+    public bool IsWalkable(BattleHexTile tile)
+    {
+        if (tile.BattleTileType == BattleHexTile.TileType.Blocked)
+            return false;
+
+        if (_tileToUnit.TryGetValue(tile, out var ret))
+        {
+            return ret != null;
+        }
+        return true;
+    }
+
     /// <summary>
     /// 현재 상태 디버그용 출력
     /// </summary>
