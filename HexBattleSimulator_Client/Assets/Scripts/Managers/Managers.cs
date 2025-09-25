@@ -42,4 +42,11 @@ public class Managers : MonoBehaviourSingleton<Managers>
         UI.Clear();
         Pool.Clear();
     }
+#if UNITY_EDITOR
+    // for debug
+    void OnDestroy()
+    {
+        Debug.LogWarning($"{this.gameObject.name} is destroyed");
+    }
+#endif
 }
