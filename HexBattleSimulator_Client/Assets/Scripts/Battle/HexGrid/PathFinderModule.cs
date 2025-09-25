@@ -14,7 +14,7 @@ public class PathFinderModule
         _board = board;
     }
 
-    //
+    // A* 
     public List<HexTile> FindPath(HexTile start, HexTile end)
     {
         if (start == null || end == null)
@@ -22,7 +22,7 @@ public class PathFinderModule
         return new List<HexTile>();
     }
 
-    // 최단경로 보장, 최대 O(N^2)의 단덤
+    // 최단경로 보장, 최대 O(N^2)의 단점
     public List<HexTile> FindPathBFS(HexTile start, HexTile end)
     {
         if (start == null || end == null)
