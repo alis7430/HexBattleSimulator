@@ -21,7 +21,7 @@ public class BattleHexTile : HexTile
         Blocked
     }
 
-    [SerializeField]
+    //[SerializeField]
     public TileType BattleTileType { get; private set; }
 
     public void SetTileType(TileType tileType = TileType.Default)
